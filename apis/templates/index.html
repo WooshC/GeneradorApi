@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generador de Música</title>
+</head>
+<body>
+    <h1>Generador de Música</h1>
+    <form id="musicForm" action="http://127.0.0.1:5000/generar_musica" method="POST">
+        <label for="note_count">Número de notas:</label>
+        <input type="number" id="note_count" name="note_count" min="1" max="200" value="50"><br>
+        <label for="speed_factor">Factor de velocidad:</label>
+        <input type="number" id="speed_factor" name="speed_factor" min="0.1" max="2" step="0.1" value="1.0"><br>
+        <button type="submit">Generar Música</button>
+    </form>
+    <div id="musicPlayer"></div>
+    <a href="http://127.0.0.1:5000/descargar_midi" download>
+        <button>Descargar Música Generada</button>
+    </a>
+
+    <script>
+        document.getElementById("musicForm").onsubmit = function(event) {
+            event.preventDefault();
+    
+            // Obtener los valores del formulario
+            const note_count = document.getElementById("note_count").value;
+            const speed_factor = document.getElementById("speed_factor").value;
+    
+            // Agregar console.log para verificar los valores
+            console.log("Datos enviados en la solicitud:", {
+        note_count: note_count,
+        speed_factor: speed_factor
+        });
+    
+            // Enviar solicitud AJAX a la API de Flask
+            fetch("http://127.0.0.1:5000/generar_musica", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    note_count: note_count,
+                    speed_factor: speed_factor
+                })
+            })
+            .then(response => {
+                // Verificar si la respuesta es válida (código de estado 200)
+                if (!response.ok) {
+                    throw new Error('Error en la solicitud.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Agregar console.log para verificar la respuesta JSON
+                console.log("Respuesta:", data);
+    
+                if (data.midi_file) {
+                    // Mostrar el reproductor MIDI
+                    const musicPlayer = document.getElementById("musicPlayer");
+                    musicPlayer.innerHTML = `
+                        <audio controls>
+                            <source src="http://127.0.0.1:5000/play_music" type="audio/midi">
+                        </audio>
+                    `;
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        };
+    </script> 
+</body>
+</html>

@@ -1,0 +1,6 @@
+music21
+flask
+flask_cors
+tensorflow
+pandas
+scikit-learn

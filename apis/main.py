@@ -140,8 +140,8 @@ def generar_musica():
     global music_counter, midi_filename
 
     data = request.json
-    note_count = data.get('note_count', 50)  # Valor predeterminado de 50 si no se proporciona
-    speed_factor = data.get('speed_factor', 1.0)  # Valor predeterminado de 1.0 si no se proporciona
+    note_count = float(data.get('note_count', 50))  # Valor predeterminado de 50 si no se proporciona
+    speed_factor = float(data.get('speed_factor', 1.0))  # Valor predeterminado de 1.0 si no se proporciona
     
     # Llamar a la función Malody_Generator
     _, melody_midi = Malody_Generator(note_count, speed_factor)
